@@ -1,12 +1,20 @@
 extends CharacterBody2D
 
 @export var speed: float = 100.0
+@export var acceleration: float = 500.0
+@export var friction: float = 500.0
+
+var input_vector: Vector2 = Vector2.ZERO
 
 func _ready():
 	add_to_group("player")
 
 func _physics_process(delta):
-	var input_vector = Vector2.ZERO
+	handle_input()
+	apply_movement(delta)
+
+func handle_input():
+	input_vector = Vector2.ZERO
 	
 	if Input.is_action_pressed("ui_right"):
 		input_vector.x += 1
@@ -17,7 +25,16 @@ func _physics_process(delta):
 	if Input.is_action_pressed("ui_up"):
 		input_vector.y -= 1
 	
-	velocity = input_vector.normalized() * speed
+	input_vector = input_vector.normalized()
+
+func apply_movement(delta):
+	if input_vector != Vector2.ZERO:
+		# Accelerate towards target velocity
+		velocity = velocity.move_toward(input_vector * speed, acceleration * delta)
+	else:
+		# Apply friction when not moving
+		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+	
 	move_and_slide()
 
 func _process(delta):
@@ -28,6 +45,7 @@ func _process(delta):
 func print_debug_info():
 	print("=== DEBUG INFO ===")
 	print("Player position: ", position)
+	print("Player velocity: ", velocity)
 	
 	var world_manager = get_tree().get_first_node_in_group("world_manager")
 	if world_manager:
