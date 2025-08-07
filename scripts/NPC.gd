@@ -207,7 +207,8 @@ func set_new_wander_target():
 		)
 
 func interact_with_player(player: Node2D):
-	print(npc_name + " says: Hello there!")
+	if GlobalMessageSystem:
+		GlobalMessageSystem.add_dialogue(npc_name, "Hello there!")
 	change_state(AIState.INTERACTING)
 	social += 10.0
 	social = min(100.0, social)

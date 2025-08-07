@@ -27,12 +27,19 @@ func create_visual():
 	add_child(collision)
 
 func perform_standard_interaction(player: Node2D):
-	print("Picked up " + item_name + "!")
+	# Use the global message system instead of print
+	if GlobalMessageSystem:
+		GlobalMessageSystem.add_pickup(item_name)
+	
 	# Add to player inventory (implement inventory system later)
 	queue_free()  # Remove from world
 
 func perform_long_press_interaction(player: Node2D):
 	if can_be_thrown:
-		print("You throw the " + item_name + "!")
+		var message = "You throw the %s!" % item_name
+		
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_interaction(message)
+		
 		# Implement throwing logic
 		queue_free()

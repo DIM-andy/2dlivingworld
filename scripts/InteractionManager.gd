@@ -11,6 +11,7 @@ signal interaction_ended(interactable)
 var player: CharacterBody2D
 var current_interactables: Array[Interactable] = []
 var closest_interactable: Interactable = null
+var previous_closest_interactable: Interactable = null
 
 # Input tracking
 var press_start_time: float = 0.0
@@ -80,6 +81,8 @@ func handle_interaction_input(delta):
 			update_interaction_prompt("Long Press Action!")
 
 func update_nearby_interactables():
+	# Store the previous closest for comparison
+	previous_closest_interactable = closest_interactable
 	current_interactables.clear()
 	
 	# Find all interactables in range
@@ -93,7 +96,6 @@ func update_nearby_interactables():
 	
 	# Alternative approach: check all nodes in group
 	var all_interactables = get_tree().get_nodes_in_group("interactables")
-	var previous_closest = closest_interactable
 	closest_interactable = null
 	var closest_distance = interaction_range
 	
@@ -111,16 +113,18 @@ func update_nearby_interactables():
 				closest_interactable = interactable
 	
 	# Update interaction prompts
-	if closest_interactable != previous_closest:
+	if closest_interactable != previous_closest_interactable:
 		update_interaction_prompt()
 
 func update_interaction_prompt(override_text: String = ""):
-	# Clear previous prompts
-	for interactable in current_interactables:
-		interactable.hide_prompt()
+	# Clear ALL previous prompts first
+	var all_interactables = get_tree().get_nodes_in_group("interactables")
+	for interactable in all_interactables:
+		if is_instance_valid(interactable):
+			interactable.hide_prompt()
 	
-	# Show prompt for closest interactable
-	if closest_interactable:
+	# Show prompt for closest interactable only
+	if closest_interactable and is_instance_valid(closest_interactable):
 		var prompt_text = override_text
 		if prompt_text.is_empty():
 			prompt_text = get_interaction_prompt_text(closest_interactable)

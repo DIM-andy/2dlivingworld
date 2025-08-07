@@ -23,7 +23,11 @@ func perform_standard_interaction(player: Node2D):
 	if npc_reference:
 		# Cycle through dialogue
 		var dialogue = dialogue_texts[current_dialogue_index % dialogue_texts.size()]
-		print(npc_reference.npc_name + " says: " + dialogue)
+		
+		# Use the global message system instead of print
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_dialogue(npc_reference.npc_name, dialogue)
+		
 		current_dialogue_index += 1
 		
 		# Make NPC look at player and change state
@@ -32,13 +36,22 @@ func perform_standard_interaction(player: Node2D):
 
 func perform_double_press_interaction(player: Node2D):
 	if npc_reference:
-		print(npc_reference.npc_name + " waves back at you!")
+		var message = "%s waves back at you!" % npc_reference.npc_name
+		
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_interaction(message)
+		
 		friendship_level += 2
 
 func perform_long_press_interaction(player: Node2D):
-	if npc_reference and friendship_level >= 5:
-		print("You hug " + npc_reference.npc_name + "! They seem happy.")
-		friendship_level += 5
-		npc_reference.social += 20.0
-	else:
-		print(npc_reference.npc_name + " steps back awkwardly. Maybe you should talk more first...")
+	if npc_reference:
+		var message: String
+		if friendship_level >= 5:
+			message = "You hug %s! They seem happy." % npc_reference.npc_name
+			friendship_level += 5
+			npc_reference.social += 20.0
+		else:
+			message = "%s steps back awkwardly. Maybe you should talk more first..." % npc_reference.npc_name
+		
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_interaction(message)

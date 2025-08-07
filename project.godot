@@ -15,6 +15,10 @@ run/main_scene="res://scenes/MainWorld.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalMessageSystem="*res://scripts/GlobalMessageSystem.gd"
+
 [input]
 
 ui_select={
