@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://b40a7scc1ufai"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_vabvc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_d5tlu"]
+radius = 12.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_vabvc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_d5tlu")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(1, 0, 0, 1)
