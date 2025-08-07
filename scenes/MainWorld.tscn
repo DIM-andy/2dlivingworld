@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://viybc25jt7jp"]
+[gd_scene load_steps=7 format=3 uid="uid://viybc25jt7jp"]
 
 [ext_resource type="Script" path="res://scripts/WorldManager.gd" id="1_e7o6m"]
 [ext_resource type="PackedScene" uid="uid://b40a7scc1ufai" path="res://scenes/Player.tscn" id="2_71sg4"]
 [ext_resource type="Script" path="res://scripts/GameUI.gd" id="3_d8aqb"]
 [ext_resource type="Script" path="res://scripts/PlayerCamera.gd" id="3_i3dfx"]
+[ext_resource type="Script" path="res://scripts/InteractionManager.gd" id="5_yd5gg"]
+[ext_resource type="PackedScene" uid="uid://ewwuujpkop4g" path="res://items/TestItem.tscn" id="6_vfjm5"]
 
 [node name="WorldManager" type="Node2D" groups=["world_manager"]]
 script = ExtResource("1_e7o6m")
@@ -14,6 +16,19 @@ position = Vector2(300, 300)
 [node name="Camera2D" type="Camera2D" parent="Player"]
 script = ExtResource("3_i3dfx")
 follow_speed = 2.5
+deadzone_size = Vector2(40, 40)
 
 [node name="GameUI" type="CanvasLayer" parent="."]
 script = ExtResource("3_d8aqb")
+
+[node name="InteractionManager" type="Node" parent="."]
+script = ExtResource("5_yd5gg")
+
+[node name="TestItem" parent="." instance=ExtResource("6_vfjm5")]
+position = Vector2(100, 100)
+
+[node name="TestItem2" parent="." instance=ExtResource("6_vfjm5")]
+position = Vector2(400, 400)
+
+[node name="TestItem3" parent="." instance=ExtResource("6_vfjm5")]
+position = Vector2(150, 500)

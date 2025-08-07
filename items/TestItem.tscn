@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ewwuujpkop4g"]
+
+[ext_resource type="Script" path="res://scripts/PickupItem.gd" id="1_yaflr"]
+
+[node name="TestItem" type="Area2D"]
+script = ExtResource("1_yaflr")
+item_name = "Coin"

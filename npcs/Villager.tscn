@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4j6n6hl7aejp"]
+[gd_scene load_steps=3 format=3 uid="uid://c4j6n6hl7aejp"]
 
 [ext_resource type="Script" path="res://scripts/NPC.gd" id="1_o3jqb"]
+[ext_resource type="Script" path="res://scripts/InteractableNPC.gd" id="2_x3fkv"]
 
 [node name="Villager" type="CharacterBody2D"]
 script = ExtResource("1_o3jqb")
+
+[node name="InteractionArea" type="Area2D" parent="." node_paths=PackedStringArray("npc_reference")]
+script = ExtResource("2_x3fkv")
+npc_reference = NodePath("..")

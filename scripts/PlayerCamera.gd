@@ -43,7 +43,7 @@ func update_camera_position(delta):
 		player_velocity = target_node.get_real_velocity()
 	
 	# Calculate look-ahead offset
-	if player_velocity.length() > 10.0:  # Only look ahead if moving fast enough
+	if player_velocity.length() > 70.0:  # Only look ahead if moving fast enough
 		var normalized_velocity = player_velocity.normalized()
 		look_ahead_offset = normalized_velocity * look_ahead_distance
 	else:
