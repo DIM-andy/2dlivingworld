@@ -12,11 +12,15 @@ enum AIState {
 @export var npc_name: String = "NPC"
 @export var move_speed: float = 50.0
 @export var interaction_range: float = 32.0
+@export var show_debug_label: bool = true
 
 var current_state: AIState = AIState.IDLE
 var current_cell: WorldCell
 var target_position: Vector2
 var state_timer: float = 0.0
+
+# UI
+var debug_label: Label
 
 # AI/Behavior variables
 var wander_radius: float = 64.0
@@ -37,6 +41,10 @@ func _ready():
 	# Create visual representation
 	create_visual()
 	create_collision()
+	
+	# Create debug label
+	if show_debug_label:
+		create_debug_label()
 
 func setup_in_cell(cell: WorldCell):
 	current_cell = cell
@@ -57,6 +65,47 @@ func create_collision():
 	collision.shape = shape
 	add_child(collision)
 
+func create_debug_label():
+	debug_label = Label.new()
+	debug_label.add_theme_font_size_override("font_size", 9)
+	debug_label.add_theme_color_override("font_color", Color.WHITE)
+	debug_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	debug_label.position = Vector2(-30, -40)  # Position above NPC
+	debug_label.size = Vector2(60, 30)
+	
+	# Add background
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0, 0, 0, 0.7)
+	style_box.corner_radius_bottom_left = 3
+	style_box.corner_radius_bottom_right = 3
+	style_box.corner_radius_top_left = 3
+	style_box.corner_radius_top_right = 3
+	debug_label.add_theme_stylebox_override("normal", style_box)
+	
+	add_child(debug_label)
+	update_debug_label()
+
+func update_debug_label():
+	if not debug_label:
+		return
+	
+	var state_text = get_state_name()
+	var energy_bar = create_energy_bar(energy)
+	debug_label.text = "%s\n%s\n%s" % [npc_name, state_text, energy_bar]
+
+func create_energy_bar(energy_value: float) -> String:
+	var bar_length = 6
+	var filled_length = int((energy_value / 100.0) * bar_length)
+	var bar = ""
+	
+	for i in bar_length:
+		if i < filled_length:
+			bar += "█"
+		else:
+			bar += "░"
+	
+	return bar
+
 func update_ai(delta: float):
 	state_timer += delta
 	
@@ -75,6 +124,10 @@ func update_ai(delta: float):
 	# Update needs over time
 	energy -= delta * 2.0  # Lose energy over time
 	energy = max(0.0, energy)
+	
+	# Update debug display
+	if show_debug_label:
+		update_debug_label()
 
 func handle_idle_state(delta: float):
 	if state_timer > randf_range(2.0, 5.0):  # Wait 2-5 seconds
