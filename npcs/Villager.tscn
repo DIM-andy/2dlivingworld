@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4j6n6hl7aejp"]
+[gd_scene load_steps=4 format=3 uid="uid://c4j6n6hl7aejp"]
 
 [ext_resource type="Script" path="res://scripts/NPC.gd" id="1_o3jqb"]
 [ext_resource type="Script" path="res://scripts/InteractableNPC.gd" id="2_x3fkv"]
+[ext_resource type="Script" path="res://scripts/VillagerSpecialization.gd" id="3_8jwwi"]
 
 [node name="Villager" type="CharacterBody2D"]
 script = ExtResource("1_o3jqb")
+npc_name = "Bob"
 
 [node name="InteractionArea" type="Area2D" parent="." node_paths=PackedStringArray("npc_reference")]
 script = ExtResource("2_x3fkv")
 npc_reference = NodePath("..")
+dialogue_texts = Array[String](["Hello there, traveler!", "Beautiful day for farming!", "I love fresh food and tools for my work.", "Have you seen any good apples around?"])
+
+[node name="VillagerSpecialization" type="Node" parent="."]
+script = ExtResource("3_8jwwi")

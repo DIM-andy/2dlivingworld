@@ -63,8 +63,8 @@ func create_ui_elements():
 	
 	# Instructions
 	var instructions = Label.new()
-	instructions.text = "\nControls:\nArrows: Move\nSpace: Print debug info"
-	instructions.add_theme_font_size_override("font_size", 10)
+	instructions.text = "\nControls:\nArrows: Move\nSpace: Print debug info\nPgUp: Toggle NPC labels\nPgDn: Hide all NPC labels\nHome: Reset NPC labels"
+	instructions.add_theme_font_size_override("font_size", 9)
 	instructions.add_theme_color_override("font_color", Color.LIGHT_GRAY)
 	vbox.add_child(instructions)
 

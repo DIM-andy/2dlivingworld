@@ -31,23 +31,29 @@ func generate_cell_content():
 		# Spawn town center
 		spawn_building("TownHall", Vector2(cell_size/2, cell_size/2))
 		
-		# Spawn some initial NPCs
-		for i in 3:
+		# Spawn NPCs with different specializations
+		for i in 4:
 			var npc_pos = Vector2(
 				randf_range(20, cell_size - 20),
 				randf_range(20, cell_size - 20)
 			)
-			spawn_npc("Villager", npc_pos)
+			var specialization = VillagerSpecialization.VillagerType.values()[i % VillagerSpecialization.VillagerType.size()]
+			spawn_npc("Villager", npc_pos, specialization)
 	
 	else:
 		# Add some random decorations
 		add_decorations()
 
-func spawn_npc(npc_type: String, pos: Vector2) -> NPC:
+func spawn_npc(npc_type: String, pos: Vector2, specialization: VillagerSpecialization.VillagerType = VillagerSpecialization.VillagerType.FARMER) -> NPC:
 	var npc = load("res://npcs/" + npc_type + ".tscn").instantiate()
 	add_child(npc)
 	npc.position = pos
 	npc.setup_in_cell(self)
+	
+	# Set specialization if the NPC has a specialization component
+	var specialization_node = npc.get_node_or_null("VillagerSpecialization")
+	if specialization_node:
+		specialization_node.villager_type = specialization
 	
 	npcs_in_cell.append(npc)
 	spatial_grid.add_object(npc, pos)

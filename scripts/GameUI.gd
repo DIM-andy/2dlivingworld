@@ -38,6 +38,14 @@ func _process(delta):
 	# Toggle debug panel with F1
 	if Input.is_action_just_pressed("ui_select"):  # F1 key
 		debug_panel.toggle_visibility()
+	
+	# NPC label controls
+	if Input.is_action_just_pressed("toggle_npc_labels"):  # Page Up - Toggle all labels
+		NPC.toggle_all_labels()
+	elif Input.is_action_just_pressed("hide_all_npc_labels"):  # Page Down - Hide all labels
+		NPC.hide_all_labels()
+	elif Input.is_action_just_pressed("reset_npc_labels"):  # Home - Reset to proximity/hover only
+		NPC.reset_label_visibility()
 
 func update_npc_labels():
 	# This is now handled by individual NPCs
