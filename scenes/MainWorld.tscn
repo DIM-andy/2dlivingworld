@@ -29,6 +29,15 @@ position = Vector2(100, 100)
 
 [node name="TestItem2" parent="." instance=ExtResource("6_vfjm5")]
 position = Vector2(400, 400)
+item_name = "Apple"
+item_type = "apple"
 
 [node name="TestItem3" parent="." instance=ExtResource("6_vfjm5")]
 position = Vector2(150, 500)
+item_name = "Flower"
+item_type = "flower"
+
+[node name="TestItem4" parent="." instance=ExtResource("6_vfjm5")]
+position = Vector2(500, 200)
+item_name = "Stick"
+item_type = "stick"

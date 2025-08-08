@@ -3,6 +3,7 @@ class_name GameUI
 
 @onready var debug_panel: DebugPanel
 @onready var message_log: MessageLog
+@onready var inventory_ui: InventoryUI
 
 var world_manager: WorldManager
 var time_system: TimeSystem
@@ -15,6 +16,10 @@ func _ready():
 	# Create message log
 	message_log = MessageLog.new()
 	add_child(message_log)
+	
+	# Create inventory UI
+	inventory_ui = InventoryUI.new()
+	add_child(inventory_ui)
 	
 	# Find world manager and time system
 	call_deferred("setup_connections")
