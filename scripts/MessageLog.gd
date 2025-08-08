@@ -27,7 +27,6 @@ var message_colors = {
 func _init():
 	# Panel properties
 	size = Vector2(400, 200)
-	position = Vector2(10, 0)  # Will be positioned at bottom-left in _ready()
 	
 	# Panel styling
 	var style_box = StyleBoxFlat.new()
@@ -47,12 +46,25 @@ func _init():
 	setup_auto_hide()
 
 func _ready():
-	# Position at bottom-left of screen
-	var viewport_size = get_viewport().get_visible_rect().size
-	position = Vector2(10, viewport_size.y - size.y - 10)
+	# Set up anchoring for bottom-left positioning
+	setup_anchoring()
 	
 	# Find time system
 	call_deferred("find_time_system")
+
+func setup_anchoring():
+	# Anchor to bottom-left of the screen
+	set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	
+	# Position with margin from edges
+	position.x = 10
+	position.y = size.y + 235
+	
+	# Set anchor points for responsive positioning
+	anchor_left = 0.0
+	anchor_right = 0.0
+	anchor_top = 1.0
+	anchor_bottom = 1.0
 
 func find_time_system():
 	if get_tree().has_group("world_manager"):

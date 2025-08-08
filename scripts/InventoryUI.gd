@@ -14,16 +14,24 @@ func _init():
 	size = Vector2(280, 80)
 
 func _ready():
-	# Position at top-center of screen after we're in the tree
-	position_at_top_center()
+	# Set up anchoring for top-center positioning
+	setup_anchoring()
 	create_inventory_slots()
 	call_deferred("find_inventory_system")
 
-func position_at_top_center():
-	# Center horizontally at the top of the screen
-	var viewport_size = get_viewport().get_visible_rect().size
-	position.x = (viewport_size.x - size.x) / 2
+func setup_anchoring():
+	# Anchor to top-center of the screen
+	set_anchors_preset(Control.PRESET_TOP_WIDE)
+	
+	# Center horizontally and position at top
+	position.x = -size.x / 2  # Offset to center the UI element
 	position.y = 10
+	
+	# Set anchor points for responsive positioning
+	anchor_left = 0.5
+	anchor_right = 0.5
+	anchor_top = 0.0
+	anchor_bottom = 0.0
 
 func find_inventory_system():
 	# Look for inventory system in the scene
