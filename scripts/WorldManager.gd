@@ -14,6 +14,7 @@ var current_player_cell: Vector2i
 # Systems
 var npc_manager: NPCManager
 var time_system: TimeSystem
+var inventory_system: InventorySystem
 
 func _ready():
 	setup_world_systems()
@@ -30,6 +31,18 @@ func setup_world_systems():
 	
 	time_system = TimeSystem.new()
 	add_child(time_system)
+	
+	# Create inventory system
+	inventory_system = InventorySystem.new()
+	inventory_system.name = "InventorySystem"  # Give it a proper name
+	add_child(inventory_system)
+	inventory_system.add_to_group("inventory_system")  # Add to group after adding to tree
+	
+	# Debug: Confirm inventory system is created
+	if GlobalMessageSystem:
+		GlobalMessageSystem.add_system("Inventory system created and added to scene")
+	else:
+		print("Inventory system created and added to scene")
 
 func generate_initial_world():
 	for x in world_size.x:

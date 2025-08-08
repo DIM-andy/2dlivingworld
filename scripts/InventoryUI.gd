@@ -28,16 +28,30 @@ func position_at_top_center():
 func find_inventory_system():
 	# Look for inventory system in the scene
 	if get_tree().has_group("inventory_system"):
-		inventory_system = get_tree().get_first_node_in_group("inventory_system")
-	else:
-		# Try to find it as a child of world manager
-		if get_tree().has_group("world_manager"):
-			var world_manager = get_tree().get_first_node_in_group("world_manager")
-			if world_manager:
-				inventory_system = world_manager.get_node_or_null("InventorySystem")
+		var nodes = get_tree().get_nodes_in_group("inventory_system")
+		if nodes.size() > 0:
+			inventory_system = nodes[0] as InventorySystem
+			if GlobalMessageSystem:
+				GlobalMessageSystem.add_system("InventoryUI found inventory system")
+	
+	# Alternative: Try to find it as a child of world manager
+	if not inventory_system and get_tree().has_group("world_manager"):
+		var world_managers = get_tree().get_nodes_in_group("world_manager")
+		if world_managers.size() > 0:
+			var world_manager = world_managers[0]
+			inventory_system = world_manager.get_node_or_null("InventorySystem") as InventorySystem
+			if inventory_system and GlobalMessageSystem:
+				GlobalMessageSystem.add_system("InventoryUI found inventory system via world manager")
 	
 	if inventory_system:
 		connect_signals()
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_system("InventoryUI connected to inventory system")
+	else:
+		if GlobalMessageSystem:
+			GlobalMessageSystem.add_system("InventoryUI could not find inventory system!")
+		else:
+			print("InventoryUI could not find inventory system!")
 
 func connect_signals():
 	if inventory_system:
