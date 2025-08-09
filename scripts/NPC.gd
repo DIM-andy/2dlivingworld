@@ -11,6 +11,7 @@ enum AIState {
 
 @export var npc_name: String = "NPC"
 @export var move_speed: float = 50.0
+@export var wander_extension: float = 128.0 # How far an NPC can wander outside its cell
 @export var interaction_range: float = 32.0
 @export var show_debug_label: bool = true
 
@@ -32,7 +33,7 @@ var is_player_nearby: bool = false
 var player_reference: CharacterBody2D
 
 # AI/Behavior variables
-var wander_radius: float = 64.0
+var wander_radius: float = 1024.0
 var home_position: Vector2
 var schedule: Dictionary = {}
 
@@ -349,10 +350,16 @@ func set_new_wander_target():
 	
 	# Keep within cell bounds if we have a cell reference
 	if current_cell:
-		var cell_bounds = Rect2(Vector2.ZERO, Vector2(current_cell.cell_size, current_cell.cell_size))
+		# 1. Define the original cell boundary
+		var cell_bounds = Rect2(current_cell.position, Vector2(current_cell.cell_size, current_cell.cell_size))
+		
+		# 2. Grow the boundary by the extension amount
+		var expanded_bounds = cell_bounds.grow(wander_extension)
+		
+		# 3. Clamp the target position within the new, expanded bounds
 		target_position = Vector2(
-			clamp(target_position.x, cell_bounds.position.x + 16, cell_bounds.size.x - 16),
-			clamp(target_position.y, cell_bounds.position.y + 16, cell_bounds.size.y - 16)
+			clamp(target_position.x, expanded_bounds.position.x + 16, expanded_bounds.end.x - 16),
+			clamp(target_position.y, expanded_bounds.position.y + 16, expanded_bounds.end.y - 16)
 		)
 
 func interact_with_player(player: Node2D):
@@ -422,13 +429,6 @@ func update_held_item_visual():
 		held_item_visual.position = Vector2(12, -10)  # Position to the right of NPC
 		add_child(held_item_visual)
 
-func register_with_manager():
-	# This gets called after the node is properly in the scene tree
-	if get_tree() and get_tree().has_group("world_manager"):
-		var world_manager = get_tree().get_first_node_in_group("world_manager")
-		if world_manager and world_manager.npc_manager:
-			world_manager.npc_manager.register_npc(self)
-
 func get_state_name() -> String:
 	match current_state:
 		AIState.IDLE:
@@ -443,6 +443,20 @@ func get_state_name() -> String:
 			return "Sleeping"
 		_:
 			return "Unknown"
+
+func activate():
+	visible = true
+	set_physics_process(true)
+	# Re-enable collision
+	if has_node("CollisionShape2D"):
+		get_node("CollisionShape2D").disabled = false
+
+func deactivate():
+	visible = false
+	set_physics_process(false)
+	# Disable collision to prevent interactions when inactive
+	if has_node("CollisionShape2D"):
+		get_node("CollisionShape2D").disabled = true
 
 # Static methods for global label control
 static func toggle_all_labels():

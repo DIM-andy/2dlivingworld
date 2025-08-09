@@ -1,27 +1,45 @@
 extends Node
 class_name NPCManager
 
+var all_npcs: Array[NPC] = []
 var active_npcs: Array[NPC] = []
-var npc_update_timer: float = 0.0
-var update_interval: float = 0.1  # Update NPCs every 0.1 seconds
+
+var world_manager: WorldManager
 
 func _ready():
+	# Get a reference to the WorldManager to access its active cells
+	world_manager = get_tree().get_first_node_in_group("world_manager")
 	set_process(true)
 
 func _process(delta):
-	npc_update_timer += delta
-	if npc_update_timer >= update_interval:
-		update_active_npcs(npc_update_timer)
-		npc_update_timer = 0.0
+	if not world_manager:
+		return
 
-func update_active_npcs(delta: float):
-	for npc in active_npcs:
+	# Clear the list of active NPCs for this frame
+	active_npcs.clear()
+	
+	# Check the status of every NPC in the world
+	for npc in all_npcs:
 		if is_instance_valid(npc):
-			npc.update_ai(delta)
+			var npc_cell = world_manager.world_to_cell(npc.global_position)
+			
+			# If the NPC is in a currently active cell, activate it
+			if world_manager.active_cells.has(npc_cell):
+				npc.activate()
+				active_npcs.append(npc)
+				npc.update_ai(delta) # Update its AI
+			# Otherwise, deactivate it
+			else:
+				npc.deactivate()
 
-func register_npc(npc: NPC):
-	if not active_npcs.has(npc):
-		active_npcs.append(npc)
+func add_npc_to_world(npc: NPC):
+	if not all_npcs.has(npc):
+		all_npcs.append(npc)
+		# Add the NPC as a child of the manager, not the cell
+		add_child(npc)
 
-func unregister_npc(npc: NPC):
-	active_npcs.erase(npc)
+func remove_npc_from_world(npc: NPC):
+	if all_npcs.has(npc):
+		all_npcs.erase(npc)
+		if is_instance_valid(npc):
+			npc.queue_free()
